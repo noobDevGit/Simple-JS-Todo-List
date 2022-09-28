@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+</head>
+<body>
+    
+
+<div id="overlay">
+    <div class="empty-textfield-alert">
+        <h3>Activity Field Cannot Be Empty</h3>
+        <p class="btn-close-alert" onclick="closeAlert()">Okay</p>
+    </div>
+    <div id="delete-alert">
+        <h3>Delete This Activity</h3>
+        <p class="btn-close-alert" style="background-color:  #f44336;" onclick="closeAlert()">No</p>
+        <p id='btn-confirm-delete' class="btn-close-alert" style="background-color: #2196F3;" >Yes</p>
+    </div>
+    <div id="finishActivity-alert">
+        <h3>Mark Activity as Finished ?</h3>
+        <p class="btn-close-alert" style="background-color:  #f44336;" onclick="closeAlert()">No</p>
+        <p id='btn-confirm-finished' class="btn-close-alert" style="background-color: #2196F3;" >Yes</p>
+    </div>
+    <div id="Action-alert">
+        <i class="fas fa-times-circle" id="close-icon" onclick="closeAction()"></i>
+        <h3>Action</h3>
+        <p id ='btn-open-finish-activity-alertbox'class="btn-close-alert" style="background-color:  #f44336;" onclick="closeAlert()">Mark Activity as finished</p><br>
+        <p id='btn-open-delete-activity-alertbox' class="btn-close-alert" style="background-color: #2196F3;" >Delete Activity</p>
+    </div>
+</div>
+
+<h1> ToDo List</h1>
+<div class="textfield-with-button">
+    <form action="#">
+        <input type="text" id="activity-field" name="fname" placeholder="Type your Activity here">
+        <i class="Add-btn fa fa-plus-square fa-2x" aria-hidden="true" onclick="checkField()"></i>
+    </form>
+</div>
+
+<div class="dropdown">
+    <p id="btn-dropdown" class="dropbtn">All Activities</p>
+    <div id="myDropdown" class="dropdown-content">
+      <a id = "btn-show-allAct" href="#All Activity">All Activity</a>
+      <a id = "btn-show-UnfinAct" href="#Unfinished Acitivity">Unfinished Activity</a>
+      <a id = "btn-show-finAct" href="#Finished Activity">Finished Activity</a>
+    </div>
+  </div>
+
+<div id="activity-list">
+    <ul id="list-act">
+
+    </ul>
+</div>
+
+
+
+<script>
+
+    //declaration
+    let activityArray = [];
+    let finishedActivityindex = [];
+    let value_from_textfield;
+    let overlay = document.getElementById("overlay");
+    let ul = document.getElementById("list-act");
+    let deleteAlertBox = document.getElementById('delete-alert');
+    let btn_confirmDelete = document.getElementById("btn-confirm-delete");
+    let emptyFieldAlertbox = document.getElementsByClassName("empty-textfield-alert");
+    let finishedAlertBox = document.getElementById("finishActivity-alert");
+    let btn_confirmFinsihed = document.getElementById("btn-confirm-finished");
+    let actionAlertbox = document.getElementById("Action-alert");
+    let btn_open_deleteActivitybox = document.getElementById('btn-open-delete-activity-alertbox');
+    let btn_open_finishActivitybox = document.getElementById('btn-open-finish-activity-alertbox');
+    let btn_close_icon = document.getElementById('close-icon');
+    let btn_dropdown = document.getElementById('btn-dropdown');
+
+    btn_dropdown.addEventListener("click",function(){
+
+
+        document.getElementById('myDropdown').classList.toggle('display');
+
+
+    });
+
+
+
+
+
+    /* close alert*/
+    function closeAlert(){
+
+        overlay.classList.remove('display');
+
+    }
+    /*end of CloseAlert */
+
+    /* Add activity to List*/
+    function addActivity(toDoItems){
+
+        let li = document.createElement('li');
+      
+    for (var i = 0; i < toDoItems.length; i++) {
+         
+           // Set text of element
+         li.innerHTML = toDoItems[i];
+        
+    }
+
+    // li length = console.log(ul.children.length);
+
+     document.getElementById('list-act').appendChild(li); 
+
+    li.addEventListener('click', function() {action(Array.prototype.indexOf.call(li.parentElement.children, li),li)});
+   
+    }
+    //End Of addActivity 
+
+    //close action box
+    function closeAction(){
+
+        overlay.classList.remove('display');
+        actionAlertbox.classList.remove('display');
+
+    }
+
+    //start of action
+    function action(m, i){
+
+        overlay.classList.add('display');
+        actionAlertbox.classList.add('display');
+
+        let checkcolor =  window.getComputedStyle(i, null).getPropertyValue("background-color");
+
+        if (checkcolor === 'rgb(0, 225, 255)') {
+            
+            btn_open_finishActivitybox.classList.add('display-none');
+        }
+
+
+        //open delete activity alert box
+        btn_open_deleteActivitybox.addEventListener("click",function() {
+            
+        overlay.classList.add('display');
+        deleteAlertBox.classList.add('display');
+
+        actionAlertbox.classList.remove('display');
+
+        btn_confirmDelete.onclick = function() {confirm_delete(m)};
+
+        });
+
+
+        
+        //open finish activity alert box
+        btn_open_finishActivitybox.addEventListener("click",function() {
+            
+            overlay.classList.add('display');
+            finishedAlertBox.classList.add('display');
+    
+            actionAlertbox.classList.remove('display');
+    
+            btn_confirmFinsihed.onclick = function() {confirm_finished(m)};
+    
+            });
+
+    }
+    //end of action
+
+    //start of confirm finished
+    function confirm_finished(m){
+
+        finishedActivityindex.push(m);
+        ul.children[m].classList.add('change-background-color');
+        overlay.classList.remove('display');
+        finishedAlertBox.classList.remove('display');
+
+        console.log(finishedActivityindex);
+
+    }
+    //end of confirm finished
+
+
+    //start of confirm delete
+    function confirm_delete(m){
+    
+        ul.removeChild(ul.children[m]);
+        
+        overlay.classList.remove('display');
+        deleteAlertBox.classList.remove('display');
+
+    }
+    //end of confirm delete
+
+
+    /* check field and add activty*/
+    function checkField(){
+
+        value_from_textfield = document.getElementById("activity-field").value;
+
+        /*console.log(value_from_textfield);*/
+
+        if (value_from_textfield == "") {
+
+            overlay.classList.add('display');
+            emptyFieldAlertbox[0].classList.add('display');
+            
+        } else {
+
+            activityArray.push(value_from_textfield);
+
+            document.getElementById("activity-field").value ="";
+
+            addActivity(activityArray);
+
+            
+            
+        }
+    }
+/* End Of checkfield */
+
+</script>
+</body>
+</html>
